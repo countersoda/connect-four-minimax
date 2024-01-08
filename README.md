@@ -12,22 +12,35 @@ This project implements the classic game Connect Four with an AI opponent using 
 ## Requirements
 
 - Python 3.12.1
+- Conda
 - NumPy library for handling the game board as a 2D array.
 
-## Setup
+## Conda Environment Setup
 
-The game is set up using a Conda environment. Ensure you have Conda installed on your system, and then create a new environment:
+To set up the game using the provided `environment.yml` file in the repository, follow these steps:
 
-```bash
-conda create --name connect-four python=3.12.1
-conda activate connect-four
-```
+1. **Create the Conda Environment**:
+   Use the `environment.yml` file to create a Conda environment. This file contains all the necessary package dependencies for the game.
 
-Install the required packages:
+   ```bash
+   conda env create -f environment.yml
+   ```
 
-```bash
-conda install numpy
-```
+2. **Activate the Environment**:
+   Once the environment is created, activate it using:
+
+   ```bash
+   conda activate connect-four
+   ```
+
+3. **Run the Game**:
+   With the environment activated, you can run the game as described previously:
+
+   ```bash
+   python main.py
+   ```
+
+This setup ensures that all dependencies are correctly installed and the game runs smoothly on your machine.
 
 ## Running the Game
 
