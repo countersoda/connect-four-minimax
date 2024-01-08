@@ -289,12 +289,12 @@ class ConnectFour:
     def play_game(self):
         while not self.game_over:
             self.print_board(self.board)
-            if self.turn == 1:
+            if self.turn == 0:
                 self.player_move()
             else:
                 self.ai_move()
         self.print_board(self.board)
-        print(f"You {'won' if self.turn == 0 else 'lost'}!")
+        print(f"You {'won' if self.turn else 'lost'}!")
 
 if __name__ == "__main__":
     # Create a new game and start playing
