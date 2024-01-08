@@ -1,7 +1,6 @@
 import numpy as np
 import random
 import math
-import sys
 
 # Constants
 PLAYER_TOKEN = 1
@@ -121,45 +120,47 @@ class ConnectFour:
         if depth == 0 or is_terminal:
             if is_terminal:
                 if self.is_winning_move(board, AI_TOKEN):
-                    # winning_columns = self.find_winning_columns(board, AI_TOKEN)
-                    # best_column = self.choose_best_column(winning_columns, board, AI_TOKEN)  # Choose the best column from the list
-                    return 10000 * depth
+                    return (None, 10000 * depth)  # None for column as it's a terminal state
                 elif self.is_winning_move(board, PLAYER_TOKEN):
-                    # winning_columns = self.find_winning_columns(board, PLAYER_TOKEN)
-                    # best_column = self.choose_best_column(winning_columns, board, PLAYER_TOKEN)
-                    return -10000 * depth
+                    return (None, -10000 * depth)
                 else:
-                    return 0  # Game is over, no more valid moves
+                    return (None, 0)  # Game is over, no more valid moves
             else:
-                return self.score_position(board, AI_TOKEN)
+                return (None, self.score_position(board, AI_TOKEN))  # Non-terminal, depth reached
 
         if maximizing_player:
             value = -math.inf
+            best_column = None
             for col in valid_locations:
                 row = self.get_next_open_row(board, col)
                 b_copy = np.copy(board)
                 self.drop_token(b_copy, row, col, AI_TOKEN)
-                new_score = self.minimax(b_copy, depth-1, alpha, beta, False)
+                _, new_score = self.minimax(b_copy, depth-1, alpha, beta, False)
                 if new_score > value:
                     value = new_score
+                    best_column = col
                 alpha = max(alpha, value)
                 if alpha >= beta:
                     break
-            return value
+            return (best_column, value)
 
-        else: # Minimizing player
+        else:  # Minimizing player
             value = math.inf
+            best_column = None
             for col in valid_locations:
                 row = self.get_next_open_row(board, col)
                 b_copy = np.copy(board)
                 self.drop_token(b_copy, row, col, PLAYER_TOKEN)
-                new_score = self.minimax(b_copy, depth-1, alpha, beta, True)
+                _, new_score = self.minimax(b_copy, depth-1, alpha, beta, True)
                 if new_score < value:
                     value = new_score
+                    best_column = col
                 beta = min(beta, value)
                 if alpha >= beta:
                     break
-            return value
+            return (best_column, value)
+
+
 
     def score_position(self, board, token):
         score = 0
@@ -253,19 +254,11 @@ class ConnectFour:
         return valid_locations
 
     def pick_best_move(self, token):
-        best_score = -math.inf
-        valid_locations = self.get_valid_locations(self.board)
-        best_col = random.choice(valid_locations)
-        for col in valid_locations:
-            row = self.get_next_open_row(self.board, col)
-            temp_board = np.copy(self.board)
-            self.drop_token(temp_board,row, col, token)
-            score = self.minimax(temp_board, 3, -math.inf, math.inf, True)  # Depth set to 4
-            if score > best_score:
-                best_score = score
-                best_col = col
+        depth = 3  # You can adjust the depth based on how deep you want the search to be
+        best_col, best_score = self.minimax(self.board, depth, -math.inf, math.inf, token == AI_TOKEN)
         print(f"Score: {best_score} at {best_col}.")
         return best_col
+
 
     def player_move(self):
         valid_move = False
