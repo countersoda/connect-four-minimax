@@ -160,10 +160,13 @@ class ConnectFour:
                     break
             return (best_column, value)
 
-
-
     def score_position(self, board, token):
         score = 0
+
+        # Score center column
+        center_array = [int(i) for i in list(board[:, COLUMN_COUNT // 2])]
+        center_count = center_array.count(token)
+        score += center_count * 3  # Center column is usually more valuable
 
         # Score Horizontal
         for r in range(ROW_COUNT):
@@ -209,7 +212,6 @@ class ConnectFour:
 
         return score
 
-
     def choose_best_column(self, winning_columns, board, token):
         best_score = -math.inf
         best_column = random.choice(winning_columns)
@@ -254,11 +256,9 @@ class ConnectFour:
         return valid_locations
 
     def pick_best_move(self, token):
-        depth = 3  # You can adjust the depth based on how deep you want the search to be
-        best_col, best_score = self.minimax(self.board, depth, -math.inf, math.inf, token == AI_TOKEN)
-        print(f"Score: {best_score} at {best_col}.")
+        depth = 4  # You can adjust the depth based on how deep you want the search to be
+        best_col, _ = self.minimax(self.board, depth, -math.inf, math.inf, token == AI_TOKEN)
         return best_col
-
 
     def player_move(self):
         valid_move = False
@@ -289,12 +289,12 @@ class ConnectFour:
     def play_game(self):
         while not self.game_over:
             self.print_board(self.board)
-            if self.turn == 0:
+            if self.turn == 1:
                 self.player_move()
             else:
                 self.ai_move()
         self.print_board(self.board)
-        print(f"You {'won' if self.turn else 'lost'}!")
+        print(f"You {'won' if self.turn == 0 else 'lost'}!")
 
 if __name__ == "__main__":
     # Create a new game and start playing
