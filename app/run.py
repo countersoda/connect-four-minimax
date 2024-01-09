@@ -2,7 +2,7 @@ from typing import Dict
 from flask import Flask, jsonify, request, Response
 from uuid import uuid4, UUID
 
-from connect_four import PLAYER_TOKEN, ConnectFour
+from connect_four import ConnectFour
 
 app = Flask(__name__)
 
