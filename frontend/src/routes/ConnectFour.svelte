@@ -36,7 +36,13 @@
 	<meta name="description" content="A Connect Four game in SvelteKit" />
 </svelte:head>
 
-{#if $connectFourStore.board}
+{#if $connectFourStore.gameover && $connectFourStore.turn == 1}
+	<h1>You won!</h1>
+{:else if $connectFourStore.gameover && $connectFourStore.turn == 0}
+	<h1>Game Over</h1>
+{/if}
+
+{#if $connectFourStore.board && !$connectFourStore.gameover}
 <div class="grid">
 	{#each $connectFourStore.board as row,rowIndex}
 	<div class="row" class:first={rowIndex === 5}>
