@@ -1,11 +1,13 @@
 from typing import Dict
-from flask import Flask, jsonify, request, Response
+from flask import Flask, jsonify, request
+from flask_cors import CORS
 from uuid import uuid4, UUID
+import numpy as np
 
 from connect_four import ConnectFour
 
 app = Flask(__name__)
-
+CORS(app)
 # A simple in-memory structure to store game state
 games: Dict[str, ConnectFour] = {}
 
@@ -14,7 +16,7 @@ def create_game():
     game_id = uuid4()
     game = ConnectFour()
     games[game_id] = game
-    return jsonify({'game_id': game_id})
+    return jsonify({'game_id': game_id, 'board': np.flip(game.board, 0).tolist(), 'is_game_over': game.game_over})
 
 @app.route('/take_turn/<game_id>', methods=['POST'])
 def take_turn(game_id):
@@ -27,9 +29,9 @@ def take_turn(game_id):
     game = games.get(UUID(game_id))
     valid = game.make_move(column)
     if not valid:
-        return jsonify({'status': 'Move unaccpted'})
+        return jsonify({'status': False})
 
-    return jsonify({'status': 'Move accepted', 'new_board': game.board.tolist(), 'is_game_over': game.game_over})
+    return jsonify({'status': True, 'board': np.flip(game.board, 0).tolist(), 'is_game_over': game.game_over})
 
 @app.route('/check_ai_move/<game_id>', methods=['GET'])
 def check_ai_move(game_id):
@@ -38,10 +40,10 @@ def check_ai_move(game_id):
         return jsonify({'error': 'Game not found'}), 404
 
     if game.turn != 1:  
-        return jsonify({'status': 'waiting', 'board': game.board.tolist()})
+        return jsonify({'status': False, 'board': np.flip(game.board, 0).tolist()})
 
     ai_move = game.ai_move()
-    return jsonify({'status': 'move_made', 'column': ai_move, 'board': game.board.tolist(), 'is_game_over': game.game_over})
+    return jsonify({'status': True, 'column': ai_move, 'board': np.flip(game.board, 0).tolist(), 'is_game_over': game.game_over})
 
 
 if __name__ == '__main__':

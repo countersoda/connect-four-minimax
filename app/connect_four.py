@@ -290,7 +290,7 @@ class ConnectFour:
             
     def ai_move(self):
         col = self.pick_best_move(AI_TOKEN)
-        if self.is_valid_location(self.board, col):
+        if col is not None and self.is_valid_location(self.board, col):
             row = self.get_next_open_row(self.board, col)
             self.drop_token(self.board, row, col, AI_TOKEN)
             if self.is_winning_move(self.board, AI_TOKEN):
