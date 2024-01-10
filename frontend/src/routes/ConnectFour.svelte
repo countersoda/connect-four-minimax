@@ -1,33 +1,35 @@
 <script lang="ts">
-	import { onMount } from "svelte";
-	import { connectFourStore } from "../store/game";
+	import { onMount } from 'svelte';
+	import { connectFourStore } from '../store/ConnectFour';
 
-    let hoveredColumn: number | undefined;
+	let hoveredColumn: number | undefined;
 
-    function setHoveredColumn(column:number) {
-        hoveredColumn = column;
-    }
+	function setHoveredColumn(column: number) {
+		hoveredColumn = column;
+	}
 
-    function clearHoveredColumn() {
-        hoveredColumn = undefined;
-    }
+	function clearHoveredColumn() {
+		hoveredColumn = undefined;
+	}
 	onMount(() => {
-		connectFourStore.createConnectFour()
-	})
+		connectFourStore.createConnectFour();
+	});
 
-	function render(value: number){
-		switch(value){
+	function render(value: number) {
+		switch (value) {
 			case 1:
-				return "X"
+				return 'X';
 			case 2:
-				return "O"
+				return 'O';
 			default:
-				return " "
+				return ' ';
 		}
 	}
 
-	function handleClick(columnIndex:number) {
-		connectFourStore.makeTurn(columnIndex).then(() => setTimeout(() => connectFourStore.aiTurn(), 500))
+	async function handleClick(columnIndex: number) {
+		await connectFourStore.makeTurn(columnIndex);
+		await new Promise((r) => setTimeout(r, 500));
+		connectFourStore.aiTurn();
 	}
 </script>
 
@@ -36,34 +38,39 @@
 	<meta name="description" content="A Connect Four game in SvelteKit" />
 </svelte:head>
 
-{#if $connectFourStore.gameover && $connectFourStore.turn == 1}
+{#if $connectFourStore.gameover && $connectFourStore.winner === 1}
 	<h1>You won!</h1>
-{:else if $connectFourStore.gameover && $connectFourStore.turn == 0}
+{:else if $connectFourStore.gameover && $connectFourStore.winner === 2}
 	<h1>Game Over</h1>
 {/if}
+<button class="restart" on:click={() => connectFourStore.createConnectFour()}>Restart</button>
 
-{#if $connectFourStore.board && !$connectFourStore.gameover}
-<div class="grid">
-	{#each $connectFourStore.board as row,rowIndex}
-	<div class="row" class:first={rowIndex === 5}>
-		{#each row as column, columnIndex}
-            <!-- svelte-ignore a11y-mouse-events-have-key-events -->
-            <button
-                class="letter" 
-                class:last={columnIndex===6} 
-                class:hovered={columnIndex === hoveredColumn}
-                on:mouseover={() => setHoveredColumn(columnIndex)}
-                on:mouseout={clearHoveredColumn} tabindex={1}
-				on:click={() => handleClick(columnIndex)}
-				>
-				{render($connectFourStore.board[rowIndex][columnIndex])}
-			</button>
-        {/each}
-    </div>
-	{/each}
-</div>
+{#if $connectFourStore.board}
+	<div class="grid">
+		{#each $connectFourStore.board as row, rowIndex}
+			<div class="row" class:first={rowIndex === 5}>
+				{#each row as _, columnIndex}
+					<!-- svelte-ignore a11y-mouse-events-have-key-events -->
+					<button
+						class="letter"
+						class:last={columnIndex === 6}
+						class:hovered={columnIndex === hoveredColumn && !$connectFourStore.gameover}
+						on:mouseover={() => setHoveredColumn(columnIndex)}
+						on:mouseout={clearHoveredColumn}
+						tabindex={1}
+						on:click={() => handleClick(columnIndex)}
+						disabled={$connectFourStore.gameover}
+					>
+						<span class:fall={$connectFourStore.board[rowIndex][columnIndex] !== 0}>
+							{render($connectFourStore.board[rowIndex][columnIndex])}
+						</span>
+					</button>
+				{/each}
+			</div>
+		{/each}
+	</div>
 {/if}
-	
+
 <style>
 	.grid {
 		--width: min(100vw, 40vh, 380px);
@@ -82,21 +89,21 @@
 		grid-template-columns: repeat(7, 1fr);
 	}
 
-    .row.first {
-        border-bottom: solid;
-        border-color: darksalmon;
-    }
+	.row.first {
+		border-bottom: solid;
+		border-color: darksalmon;
+	}
 
-    :global(.grid .row .letter.hovered) {
-        background-color: antiquewhite;
-    }
+	:global(.grid .row .letter.hovered) {
+		background-color: antiquewhite;
+	}
 
 	.letter {
 		border-top: none;
 		border-bottom: none;
-		border-right:none;
-        border-left:solid;
-        border-color: darksalmon;
+		border-right: none;
+		border-left: solid;
+		border-color: darksalmon;
 		aspect-ratio: 1;
 		width: 100%;
 		display: flex;
@@ -104,40 +111,44 @@
 		justify-content: center;
 		text-align: center;
 		box-sizing: border-box;
-		text-transform: lowercase;
 		font-size: calc(0.08 * var(--width));
 		background: white;
 		margin: 0;
 		color: rgba(0, 0, 0, 0.7);
-        transition: background-color 0.3s;
+		transition: background-color 0.3s;
 	}
 
-    .letter.last {
-        border-right: solid;
-        border-color: darksalmon;
-    }
+	.letter.last {
+		border-right: solid;
+		border-color: darksalmon;
+	}
 
-	@keyframes wiggle {
-		0% {
-			transform: translateX(0);
+	.fall {
+		animation: falling 1s;
+	}
+
+	.restart {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		padding: 0.5rem 1rem;
+		border-radius: 5px;
+		border: solid darksalmon;
+		color: darksalmon;
+		margin-bottom: 2rem;
+		transition: background-color 200ms ease-in-out;
+		&:hover{
+			background-color: darksalmon;
+			color: white
 		}
-		10% {
-			transform: translateX(-2px);
+	}
+
+	@keyframes falling {
+		from {
+			transform: translateY(-400px);
 		}
-		30% {
-			transform: translateX(4px);
-		}
-		50% {
-			transform: translateX(-6px);
-		}
-		70% {
-			transform: translateX(+4px);
-		}
-		90% {
-			transform: translateX(-2px);
-		}
-		100% {
-			transform: translateX(0);
+		to {
+			transform: translateY(0);
 		}
 	}
 </style>

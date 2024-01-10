@@ -3,8 +3,8 @@
 </script>
 
 <svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
+	<title>Connect Four</title>
+	<meta name="description" content="Play connect four with an AI" />
 </svelte:head>
 
 <section>
