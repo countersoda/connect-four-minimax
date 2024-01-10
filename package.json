@@ -1,0 +1,11 @@
+{
+  "name": "connect-four",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "turbo run dev"
+  },
+  "dependencies": {
+    "turbo": "^1.11.3"
+  }
+}
