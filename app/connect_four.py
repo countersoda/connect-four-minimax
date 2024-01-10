@@ -13,6 +13,7 @@ class ConnectFour:
         self.board = np.zeros((ROW_COUNT, COLUMN_COUNT), dtype=int)
         self.game_over = False
         self.turn = 0  # 0 for player, 1 for AI
+        self.winner = -1
 
     def drop_token(self, board, row, col, token):
         board[row][col] = token
@@ -166,7 +167,7 @@ class ConnectFour:
         # Score center column
         center_array = [int(i) for i in list(board[:, COLUMN_COUNT // 2])]
         center_count = center_array.count(token)
-        score += center_count * 3  # Center column is usually more valuable
+        score += center_count * 2  # Center column is usually more valuable
 
         # Score Horizontal
         for r in range(ROW_COUNT):
@@ -212,42 +213,6 @@ class ConnectFour:
 
         return score
 
-    def choose_best_column(self, winning_columns, board, token):
-        best_score = -math.inf
-        best_column = random.choice(winning_columns)
-
-        for col in winning_columns:
-            row = self.get_next_open_row(board, col)
-            temp_board = board.copy()
-            self.drop_token(temp_board, row, col, token)
-            score = self.evaluate_board_for_future_opportunities(temp_board, token)
-
-            if score > best_score:
-                best_score = score
-                best_column = col
-
-        return best_column
-
-    def evaluate_board_for_future_opportunities(self, board, token):
-        score = 0
-
-        # Evaluate the board for future opportunities after making a move
-        # This can include checking for potential two-way wins, blocking opponent moves, etc.
-
-        # Example: Add points if the move sets up a two-way win
-        # This is a placeholder logic, replace with your own strategy
-        for c in range(COLUMN_COUNT):
-            for r in range(ROW_COUNT):
-                if board[r][c] == 0:
-                    # Check if placing a token here sets up a two-way win
-                    board[r][c] = token
-                    if self.is_winning_move(board, token):
-                        # Additional checks to see if this creates a two-way win
-                        score += 10  # Assign a score based on strategic advantage
-                    board[r][c] = 0  # Reset the board
-
-        return score
-
     def get_valid_locations(self, board):
         valid_locations = []
         for col in range(COLUMN_COUNT):
@@ -282,6 +247,7 @@ class ConnectFour:
             self.drop_token(self.board, row, col, PLAYER_TOKEN)
             if self.is_winning_move(self.board, PLAYER_TOKEN):
                 self.game_over = True
+                self.winner = PLAYER_TOKEN
             self.turn += 1
             self.turn = self.turn % 2
             return True
@@ -295,6 +261,7 @@ class ConnectFour:
             self.drop_token(self.board, row, col, AI_TOKEN)
             if self.is_winning_move(self.board, AI_TOKEN):
                 self.game_over = True
+                self.winner = AI_TOKEN
             self.turn += 1
             self.turn = self.turn % 2
         return col
