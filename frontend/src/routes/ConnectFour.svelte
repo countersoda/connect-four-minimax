@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import { connectFourStore } from '../store/ConnectFour';
 
 	let hoveredColumn: number | undefined;
@@ -31,7 +31,21 @@
 		await new Promise((r) => setTimeout(r, 500));
 		connectFourStore.aiTurn();
 	}
-</script>
+  
+	function handleKeyPress(event: KeyboardEvent) {
+	  if (event.key === 'r' || event.key === 'R') {
+		connectFourStore.createConnectFour()
+	  }
+	}
+  
+	onMount(() => {
+	  window.addEventListener('keydown', handleKeyPress);
+	});
+  
+	onDestroy(() => {
+	  window.removeEventListener('keydown', handleKeyPress);
+	});
+  </script>
 
 <svelte:head>
 	<title>Connect Four</title>
@@ -60,6 +74,7 @@
 						tabindex={1}
 						on:click={() => handleClick(columnIndex)}
 						disabled={$connectFourStore.gameover}
+						aria-pressed="false"
 					>
 						<span class:fall={$connectFourStore.board[rowIndex][columnIndex] !== 0}>
 							{render($connectFourStore.board[rowIndex][columnIndex])}
@@ -124,8 +139,9 @@
 	}
 
 	.fall {
-		animation: falling 1s;
+    	animation: falling 600ms ease-in-out; /* Apply the 'falling' animation */
 	}
+
 
 	.restart {
 		position: absolute;
@@ -144,11 +160,30 @@
 	}
 
 	@keyframes falling {
-		from {
-			transform: translateY(-400px);
-		}
-		to {
-			transform: translateY(0);
-		}
-	}
+    0% {
+        transform: translateY(-500px); /* Start above */
+        opacity: 0;
+    }
+    20% {
+        transform: translateY(0); /* First contact with the ground */
+        opacity: 1;
+    }
+    40% {
+        transform: translateY(-50px); /* First bounce */
+    }
+    60% {
+        transform: translateY(0); /* Return to ground */
+    }
+    80% {
+        transform: translateY(-25px); /* Second bounce */
+    }
+    100% {
+        transform: translateY(0); /* Settle down */
+    }
+
+}
+
+
+
+
 </style>
