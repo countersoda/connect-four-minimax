@@ -221,7 +221,7 @@ class ConnectFour:
         return valid_locations
 
     def pick_best_move(self, token):
-        depth = 4  # You can adjust the depth based on how deep you want the search to be
+        depth = 5     # You can adjust the depth based on how deep you want the search to be
         best_col, _ = self.minimax(self.board, depth, -math.inf, math.inf, token == AI_TOKEN)
         return best_col
 
