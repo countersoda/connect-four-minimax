@@ -18,11 +18,11 @@
 	function render(value: number) {
 		switch (value) {
 			case 1:
-				return 'X';
+				return 'red';
 			case 2:
-				return 'O';
+				return 'yellow';
 			default:
-				return ' ';
+				return 'transparent';
 		}
 	}
 
@@ -74,10 +74,20 @@
 						tabindex={1}
 						on:click={() => handleClick(columnIndex)}
 						disabled={$connectFourStore.gameover}
-						aria-pressed="false"
 					>
 						<span class:fall={$connectFourStore.board[rowIndex][columnIndex] !== 0}>
-							{render($connectFourStore.board[rowIndex][columnIndex])}
+							<svg width="100" height="100">
+								<circle
+									cx="50"
+									cy="50"
+									r="30"
+									stroke-width="3"
+									stroke={$connectFourStore.board[rowIndex][columnIndex] === 0
+										? 'transparent'
+										: 'black'}
+									fill={render($connectFourStore.board[rowIndex][columnIndex])}
+								/>
+							</svg>
 						</span>
 					</button>
 				{/each}
