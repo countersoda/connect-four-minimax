@@ -28,7 +28,7 @@
 
 <!-- svelte-ignore a11y-mouse-events-have-key-events -->
 <button
-	class="letter"
+	class="token"
 	class:last={columnIndex === 6}
 	class:hovered={columnIndex === hoveredColumn && !$connectFourStore.gameover}
 	on:mouseover={hoverColumn}
@@ -52,7 +52,7 @@
 </button>
 
 <style>
-	.letter {
+	.token {
 		border-top: none;
 		border-bottom: none;
 		border-right: none;
@@ -72,7 +72,7 @@
 		transition: background-color 0.3s;
 	}
 
-	.letter.last {
+	.token.last {
 		border-right: solid;
 		border-color: darksalmon;
 	}
