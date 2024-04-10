@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": "FLASK_APP=run.py flask run --reload"
+    "dev": "FLASK_APP=server.py flask run --reload"
   }
 }
