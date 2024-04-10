@@ -20,7 +20,6 @@ def create_game():
 
 @app.route('/take_turn/<game_id>', methods=['POST'])
 def take_turn(game_id):
-    print(games)
     if not games.get(UUID(game_id)):
         return jsonify({'error': 'Game not found'}), 404
 

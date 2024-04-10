@@ -70,6 +70,7 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: flex-start;
+		cursor: pointer;
 	}
 
 	.grid .row {
