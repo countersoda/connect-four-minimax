@@ -1,5 +1,6 @@
 <script>
-	import ConnectFour from './ConnectFour.svelte';
+	import ConnectFour from '../components/ConnectFourGrid.svelte';
+	import RestartButton from '../components/ResetButton.svelte';
 </script>
 
 <svelte:head>
@@ -8,6 +9,7 @@
 </svelte:head>
 
 <section>
+	<RestartButton />
 	<ConnectFour />
 </section>
 
@@ -19,5 +21,4 @@
 		align-items: center;
 		flex: 0.6;
 	}
-
 </style>
