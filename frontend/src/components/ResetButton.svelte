@@ -4,7 +4,7 @@
 
 	function handleKeyPress(event: KeyboardEvent) {
 		if (event.key === 'r' || event.key === 'R') {
-			connectFourStore.createConnectFour();
+			connectFourStore.createConnectFour($connectFourStore.mode);
 		}
 	}
 
@@ -17,7 +17,9 @@
 	});
 </script>
 
-<button class="restart" on:click={() => connectFourStore.createConnectFour()}>Restart</button>
+<button class="restart" on:click={() => connectFourStore.createConnectFour($connectFourStore.mode)}
+	>Restart</button
+>
 
 <style>
 	.restart {

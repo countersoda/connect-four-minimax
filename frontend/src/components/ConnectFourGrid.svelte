@@ -6,7 +6,7 @@
 	let hoveredColumn: number | undefined;
 
 	onMount(() => {
-		connectFourStore.createConnectFour();
+		connectFourStore.createConnectFour($connectFourStore.mode);
 	});
 
 	function setHoveredColumn(column: number) {

@@ -1,11 +1,14 @@
 import { writable } from 'svelte/store';
 
+export type DifficultyMode = 'beginner' | 'intermediate' | 'expert';
+
 interface ConnectFour {
 	id: string;
 	board: number[][];
 	turn: number;
 	gameover: boolean;
 	winner: number;
+	mode: DifficultyMode;
 }
 
 interface CreateConnectFourResponse {
@@ -21,20 +24,37 @@ interface TurnResponse {
 	winner: number;
 }
 
+const modeToDepth = (mode: DifficultyMode) => {
+	switch (mode) {
+		case 'beginner':
+			return 2;
+		case 'intermediate':
+			return 3;
+		case 'expert':
+			return 4;
+	}
+};
+
 const createConnectFourStore = () => {
-	const { subscribe, set, update } = writable({} as ConnectFour);
+	const { subscribe, update } = writable({ mode: 'beginner' } as ConnectFour);
 	return {
 		subscribe,
-		createConnectFour: async () => {
-			const res = await fetch('http://127.0.0.1:5000/create_game', { method: 'post' });
-			const data = (await res.json()) as CreateConnectFourResponse;
-			set({
+		update,
+		createConnectFour: async (mode: DifficultyMode) => {
+			const res = await fetch('http://127.0.0.1:5000/create_game', {
+				method: 'post',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ depth: modeToDepth(mode) })
+			});
+			const data: CreateConnectFourResponse = await res.json();
+			update((cf) => ({
+				...cf,
 				id: data.game_id,
 				board: data.board,
 				turn: 0,
 				gameover: data.is_game_over,
 				winner: -1
-			});
+			}));
 		},
 		makeTurn: async (column: number) => {
 			subscribe(async (connectFour) => {
@@ -43,7 +63,7 @@ const createConnectFourStore = () => {
 					method: 'post',
 					headers: { 'Content-Type': 'application/json' }
 				});
-				const data = (await res.json()) as TurnResponse;
+				const data: TurnResponse = await res.json();
 				if (data.status)
 					update((cf) => ({
 						...cf,
@@ -56,7 +76,7 @@ const createConnectFourStore = () => {
 		aiTurn: async () => {
 			subscribe(async (connectFour) => {
 				const res = await fetch(`http://127.0.0.1:5000/check_ai_move/${connectFour.id}`, {});
-				const data = (await res.json()) as TurnResponse;
+				const data: TurnResponse = await res.json();
 				update((cf) => ({
 					...cf,
 					board: data.board,

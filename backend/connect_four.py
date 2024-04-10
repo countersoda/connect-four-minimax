@@ -7,14 +7,15 @@ PLAYER_TOKEN = 1
 AI_TOKEN = 2
 ROW_COUNT = 6
 COLUMN_COUNT = 7
-DEPTH = 1
+DEPTH = 5
 
 class ConnectFour:
-    def __init__(self):
+    def __init__(self, depth=5):
         self.board = np.zeros((ROW_COUNT, COLUMN_COUNT), dtype=int)
         self.game_over = False
         self.turn = 0  # 0 for player, 1 for AI
         self.winner = -1
+        self.depth = depth
 
     def drop_token(self, board, row, col, token):
         board[row][col] = token
@@ -222,7 +223,7 @@ class ConnectFour:
         return valid_locations
 
     def pick_best_move(self, token):
-        depth = DEPTH     # You can adjust the depth based on how deep you want the search to be
+        depth = self.depth     # You can adjust the depth based on how deep you want the search to be
         best_col, _ = self.minimax(self.board, depth, -math.inf, math.inf, token == AI_TOKEN)
         return best_col
 

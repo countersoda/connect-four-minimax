@@ -2,6 +2,7 @@
 	import ConnectFour from '../components/ConnectFourGrid.svelte';
 	import RestartButton from '../components/ResetButton.svelte';
 	import ConnectFourTitle from '../components/ConnectFourTitle.svelte';
+	import DifficultyButtons from '../components/DifficultyButtons.svelte';
 </script>
 
 <svelte:head>
@@ -11,6 +12,7 @@
 
 <section>
 	<RestartButton />
+	<DifficultyButtons />
 	<ConnectFourTitle />
 	<ConnectFour />
 </section>

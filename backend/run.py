@@ -14,7 +14,8 @@ games: Dict[str, ConnectFour] = {}
 @app.route('/create_game', methods=['POST'])
 def create_game():
     game_id = uuid4()
-    game = ConnectFour()
+    depth = request.json.get("depth")
+    game = ConnectFour(depth=depth)
     games[game_id] = game
     return jsonify({'game_id': game_id, 'board': np.flip(game.board, 0).tolist(), 'is_game_over': game.game_over})
 
