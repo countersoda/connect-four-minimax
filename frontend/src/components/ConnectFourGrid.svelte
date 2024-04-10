@@ -9,20 +9,6 @@
 		connectFourStore.createConnectFour();
 	});
 
-	function handleKeyPress(event: KeyboardEvent) {
-		if (event.key === 'r' || event.key === 'R') {
-			connectFourStore.createConnectFour();
-		}
-	}
-
-	onMount(() => {
-		if (typeof window !== 'undefined') window.addEventListener('keydown', handleKeyPress);
-	});
-
-	onDestroy(() => {
-		if (typeof window !== 'undefined') window.removeEventListener('keydown', handleKeyPress);
-	});
-
 	function setHoveredColumn(column: number) {
 		hoveredColumn = column;
 	}
@@ -57,7 +43,6 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: flex-start;
-		cursor: pointer;
 	}
 
 	.grid .row {
@@ -70,7 +55,8 @@
 		border-color: darksalmon;
 	}
 
-	:global(.grid .row .letter.hovered) {
+	:global(.grid .row .token.hovered) {
 		background-color: antiquewhite;
+		cursor: pointer;
 	}
 </style>

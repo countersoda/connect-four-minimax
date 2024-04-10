@@ -7,6 +7,7 @@ PLAYER_TOKEN = 1
 AI_TOKEN = 2
 ROW_COUNT = 6
 COLUMN_COUNT = 7
+DEPTH = 1
 
 class ConnectFour:
     def __init__(self):
@@ -221,7 +222,7 @@ class ConnectFour:
         return valid_locations
 
     def pick_best_move(self, token):
-        depth = 5     # You can adjust the depth based on how deep you want the search to be
+        depth = DEPTH     # You can adjust the depth based on how deep you want the search to be
         best_col, _ = self.minimax(self.board, depth, -math.inf, math.inf, token == AI_TOKEN)
         return best_col
 

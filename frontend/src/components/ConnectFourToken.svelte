@@ -43,7 +43,7 @@
 				cx="35"
 				cy="35"
 				r="30"
-				stroke-width="3"
+				stroke-width="1"
 				stroke={$connectFourStore.board[rowIndex][columnIndex] === 0 ? 'transparent' : 'black'}
 				fill={render($connectFourStore.board[rowIndex][columnIndex])}
 			/>
@@ -57,6 +57,7 @@
 		border-bottom: none;
 		border-right: none;
 		border-left: solid;
+		outline: none;
 		border-color: darksalmon;
 		aspect-ratio: 1;
 		width: 100%;

@@ -1,5 +1,20 @@
-<script>
+<script lang="ts">
+	import { onDestroy, onMount } from 'svelte';
 	import { connectFourStore } from '../store/ConnectFour';
+
+	function handleKeyPress(event: KeyboardEvent) {
+		if (event.key === 'r' || event.key === 'R') {
+			connectFourStore.createConnectFour();
+		}
+	}
+
+	onMount(() => {
+		if (typeof window !== 'undefined') window.addEventListener('keydown', handleKeyPress);
+	});
+
+	onDestroy(() => {
+		if (typeof window !== 'undefined') window.removeEventListener('keydown', handleKeyPress);
+	});
 </script>
 
 <button class="restart" on:click={() => connectFourStore.createConnectFour()}>Restart</button>
