@@ -32,19 +32,6 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Connect Four</title>
-	<meta name="description" content="A Connect Four game in SvelteKit" />
-</svelte:head>
-
-{#if $connectFourStore.gameover && $connectFourStore.winner === 1}
-	<h1>You won!</h1>
-{:else if $connectFourStore.gameover && $connectFourStore.winner === 2}
-	<h1>Game Over</h1>
-{:else}
-	<h1>Play</h1>
-{/if}
-
 {#if $connectFourStore.board}
 	<div class="grid">
 		{#each $connectFourStore.board as row, rowIndex}
